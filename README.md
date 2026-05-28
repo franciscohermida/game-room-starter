@@ -5,6 +5,7 @@ A Cloudflare Agents starter for tiny multiplayer rooms.
 One Agent per room. Synced state. Hibernatable WebSockets. Three.js for an iso scene with players.
 
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/franciscohermida/game-room-starter)
+[![Source on GitHub](https://img.shields.io/badge/source-github-181717?style=for-the-badge&logo=github)](https://github.com/franciscohermida/game-room-starter)
 [![MIT](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)](LICENSE)
 
 One command runs it all locally. No Cloudflare account required.
