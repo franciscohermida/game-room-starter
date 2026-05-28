@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+    <title>game-room-starter</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div id="canvas-container"></div>
+    <div id="overlays"></div>
+
+    <div id="hud">
+      <div id="name-prompt">
+        <h1>game-room-stater</h1>
+        <input
+          id="name-input"
+          placeholder="Your name"
+          maxlength="20"
+          autofocus
+        />
+        <button id="enter-btn">Enter</button>
+      </div>
+
+      <div id="room-info" hidden>
+        <span id="room-code"></span>
+        <button id="copy-link-btn">Copy link</button>
+        <button id="new-room-btn">New room</button>
+      </div>
+
+      <div id="chat" hidden>
+        <input
+          id="chat-input"
+          placeholder="Press Enter to chat"
+          maxlength="200"
+        />
+      </div>
+
+      <div id="hint" hidden>WASD or arrows to move · Enter to chat</div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

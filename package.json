@@ -1,0 +1,30 @@
+{
+  "name": "game-room-starter",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "deploy": "npm run build && wrangler deploy -c dist/game_room/wrangler.json"
+  },
+  "dependencies": {
+    "agents": "^0.13.2",
+    "three": "^0.171.0"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.0.0",
+    "@cloudflare/workers-types": "^4.20251201.0",
+    "@types/three": "^0.171.0",
+    "typescript": "^5.7.0",
+    "vite": "^6.0.0",
+    "wrangler": "^4.0.0"
+  },
+  "packageManager": "pnpm@10.23.0",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "workerd"
+    ]
+  }
+}
