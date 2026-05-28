@@ -8,6 +8,8 @@ One Agent per room. Synced state. Hibernatable WebSockets. Three.js for an iso s
 [![Source on GitHub](https://img.shields.io/badge/source-github-181717?style=for-the-badge&logo=github)](https://github.com/franciscohermida/game-room-starter)
 [![MIT](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)](LICENSE)
 
+For more CF primitives check: [vibe-cdn](https://github.com/acoyfellow/vibe-cdn) by [@acoyfellow](https://x.com/acoyfellow) — same vibe-coder audience, more Cloudflare primitives (R2 asset delivery, D1 leaderboards, KV saves) for heavier browser games.
+
 One command runs it all locally. No Cloudflare account required.
 
 ## Quick start
