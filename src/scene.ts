@@ -10,13 +10,25 @@ export interface Player {
   id: string;
   name: string;
   color: string;
+  // Rendered position (what the mesh is drawn at). For the local
+  // player this is driven directly by input each frame. For remote
+  // players it lerps toward `targetX`/`targetY`, which is the last
+  // position the server sent — that's how 20 Hz state updates look
+  // like smooth 60 fps motion.
   x: number;
   y: number;
+  // Latest network position. Mirrors `x`/`y` for the local player.
+  targetX: number;
+  targetY: number;
   // Facing direction as a 2D unit vector in world space. Carried per
   // player so the body keeps facing the last direction it walked even
-  // after stopping.
+  // after stopping. Same interpolation pattern as position: rendered
+  // `facingX/Y` lerps toward `targetFacingX/Y` for remote players so
+  // turns look smooth instead of stepping at the 20 Hz send rate.
   facingX: number;
   facingY: number;
+  targetFacingX: number;
+  targetFacingY: number;
   body: THREE.Mesh;
   // Tiny white sphere positioned slightly ahead of the body in the
   // facing direction. Acts as a "nose" so you can tell which way each
@@ -122,7 +134,15 @@ export function createPlayer(
   scene: THREE.Scene,
   p: Omit<
     Player,
-    "body" | "indicator" | "torchLight" | "torchFlame" | "torchPhase"
+    | "body"
+    | "indicator"
+    | "torchLight"
+    | "torchFlame"
+    | "torchPhase"
+    | "targetX"
+    | "targetY"
+    | "targetFacingX"
+    | "targetFacingY"
   >,
 ): Player {
   const body = new THREE.Mesh(
@@ -180,6 +200,10 @@ export function createPlayer(
 
   return {
     ...p,
+    targetX: p.x,
+    targetY: p.y,
+    targetFacingX: p.facingX,
+    targetFacingY: p.facingY,
     body,
     indicator,
     torchFlame,

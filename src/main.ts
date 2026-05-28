@@ -46,6 +46,10 @@ const SPEED = 4; // tiles per second
 const SEND_INTERVAL_MS = 50; // ~20 Hz position sync
 const HALF_MAP = MAP_SIZE / 2 - 0.5;
 const ARRIVAL_RADIUS = 0.15;
+// Exponential smoothing rate for remote players' positions. Higher =
+// catches up faster (tighter to source-of-truth but more jitter on
+// dropped packets). 12 ≈ ~80ms time constant, smooth and responsive.
+const LERP_RATE = 12;
 const CAM_OFFSET = { x: 15, y: 15, z: 15 };
 
 const canvasContainer = $("canvas-container");
@@ -112,10 +116,13 @@ function syncFromState(state: RoomState) {
     if (id !== myId) {
       const lp = localPlayers.get(id);
       if (!lp) continue;
-      lp.x = p.x;
-      lp.y = p.y;
-      lp.facingX = p.facingX;
-      lp.facingY = p.facingY;
+      // Store the latest network position + facing as targets; the
+      // render loop lerps lp.x/lp.y and lp.facingX/Y toward them so
+      // 20 Hz updates look smooth at the render rate.
+      lp.targetX = p.x;
+      lp.targetY = p.y;
+      lp.targetFacingX = p.facingX;
+      lp.targetFacingY = p.facingY;
     }
   }
   for (const id of [...localPlayers.keys()]) {
@@ -284,7 +291,27 @@ function frame(now: number) {
   }
 
   const t = now / 1000;
+  // Exponential smoothing factor — `LERP_RATE` ~= "1 / time constant",
+  // so 12 means we close ~70% of the gap to target every ~100ms.
+  // Frame-rate-independent because it scales with dt.
+  const lerp = 1 - Math.exp(-dt * LERP_RATE);
   for (const p of localPlayers.values()) {
+    // Remote players: ease the rendered position + facing toward the
+    // latest network target. Local player is already authoritative
+    // (we wrote both from input this same frame), so skip for self.
+    if (p.id !== myId) {
+      p.x += (p.targetX - p.x) * lerp;
+      p.y += (p.targetY - p.y) * lerp;
+      p.facingX += (p.targetFacingX - p.facingX) * lerp;
+      p.facingY += (p.targetFacingY - p.facingY) * lerp;
+      // Re-normalize so facing stays a unit vector (component-wise
+      // lerp pulls it inside the unit circle on the way to target).
+      const mag = Math.hypot(p.facingX, p.facingY);
+      if (mag > 0.001) {
+        p.facingX /= mag;
+        p.facingY /= mag;
+      }
+    }
     p.body.position.x = p.x;
     p.body.position.z = p.y;
     p.indicator.position.x = p.x + p.facingX * INDICATOR_OFFSET;
